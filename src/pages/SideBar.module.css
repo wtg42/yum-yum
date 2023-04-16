@@ -1,0 +1,27 @@
+/* 收合 side bar 的動畫 */
+@keyframes sliding-sidebar-left { /*動畫名稱為 sliding-sidebar*/
+  from {left: 0px;}
+  to {left: -320px;}
+}
+
+.sidebar-animation-close {
+    animation-name: sliding-sidebar-left; /*動畫名稱(自訂)*/
+    animation-duration: 0.5s; /*一次完整動畫時間為4秒*/
+    animation-iteration-count: 1; /*播放次數*/
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+}
+
+/* 打開 side bar 的動畫*/
+@keyframes sliding-sidebar-right {
+  from { left: -320px }
+  to { left: 0px }
+}
+
+.sidebar-animation-open {
+  animation-name: sliding-sidebar-right; /*動畫名稱(自訂)*/
+  animation-duration: 0.5s; /*一次完整動畫時間為4秒*/
+  animation-iteration-count: 1; /*播放次數*/
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
