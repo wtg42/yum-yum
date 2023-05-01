@@ -2,16 +2,46 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+// 顧客
+model Customer {
+  id          BigInt   @id @default(autoincrement())
+  phoneNumber String   @default("")
+  orderId     BigInt   @default(0)
+  queueNumber Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 訂單
+model Order {
+  id           BigInt   @id @default(autoincrement())
+  queueNumber  Int      @default(0)
+  orderContent String   @default("") // 點餐內容
+  note         String   @default("") // 客戶備註
+  totalPrice   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// 品項
+model FoodItem {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 分類
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
 }

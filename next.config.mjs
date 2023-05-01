@@ -18,5 +18,8 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  env: {
+    domain: "http://localhost:3000",
+  },
 };
 export default config;

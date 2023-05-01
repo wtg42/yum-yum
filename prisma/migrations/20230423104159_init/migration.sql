@@ -1,0 +1,35 @@
+-- CreateTable
+CREATE TABLE "Customer" (
+    "id" BIGINT NOT NULL PRIMARY KEY,
+    "phoneNumber" TEXT NOT NULL DEFAULT '',
+    "orderId" BIGINT NOT NULL DEFAULT 0,
+    "queueNumber" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Order" (
+    "id" BIGINT NOT NULL PRIMARY KEY,
+    "queueNumber" INTEGER NOT NULL DEFAULT 0,
+    "orderContent" TEXT NOT NULL DEFAULT '',
+    "note" TEXT NOT NULL DEFAULT '',
+    "totalPrice" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "FoodItem" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "price" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Category" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
+);

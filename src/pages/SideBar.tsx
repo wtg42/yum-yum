@@ -6,6 +6,7 @@
 import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import MateriaIcon from "./MateriaIcon";
 import sbStyles from "./SideBar.module.css";
+import { Button, Flex } from "@chakra-ui/react";
 
 interface SideBarProps {
   barStatus: string;
@@ -26,7 +27,6 @@ const SideBar = (props: SideBarProps) => {
       setBarStatusClassName(sbStyles['sidebar-animation-open'] || "")
     }
   }, [barStatus])
-  // const barStatusClassName = (barStatus == "close") ? "" : sbStyles['sidebar-animation-open'] || ""
 
   return (
     <nav
@@ -35,13 +35,18 @@ const SideBar = (props: SideBarProps) => {
       <div className="flex justify-start items-center w-full h-16">
         <MateriaIcon barStatus={barStatus} sideBarSetter={sideBarSetter}>menu</MateriaIcon>
       </div>
-      <div className="flex">
-        <button
-          className="bg-red-700 w-auto p-3 rounded-full flex items-center justify-center"
-        >
-          {`This is a button here.`}
-        </button>
-      </div>
+        <Flex direction="column" alignItems="center">
+          <Button
+            width={263}
+            colorScheme="blue"
+            rounded={20}
+            _hover={{
+              background: "#e5e9ed",
+              color: "teal.500",
+            }}
+          >蛋餅
+          </Button>
+        </Flex>        
     </nav>
   );
 }
