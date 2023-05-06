@@ -35,13 +35,10 @@ const AddCategory: NextPage = () => {
     onSubmit: async (value) => {
       const { categoryName } = value;
       try {
-        // const formData = new FormData();
-        // formData.set("name", "4444");
-        // await axios.post(`http://${domainNameRef.current}/workbench/addCategory`);
         const result: AddCategoryResponse = await axios({
           method: "post",
           baseURL: "http://localhost:3000",
-          url: "/api/category/addCategory",
+          url: "/api/category/",
           // headers: { "Content-Type": "application/json" },
           data: {
             name: categoryName,
@@ -66,7 +63,7 @@ const AddCategory: NextPage = () => {
   return (
     <Flex bgColor={"gray.100"} align={"center"} justify={"center"} h={"100vh"}>
       <Box bgColor={"white"} p={6} rounded={"md"} h={"50vh"}>
-        <Center mb={3}>
+        <Center mb={6}>
           <Heading>新增菜單分類</Heading>
         </Center>
         <form onSubmit={formik.handleSubmit}>

@@ -17,8 +17,18 @@ export default async function handler(
     "X-Requested-With, Content-Type",
   );
 
+  const prisma = new PrismaClient();
+
+  if (req.method == "GET") {
+    console.log("GET here::", req.method)
+    const categories = await prisma.category.findMany()
+    await prisma.$disconnect();
+
+    res.status(200).json({ message: "success", categories: categories });
+    return
+  }
+
   if (req.method == "POST" && req.body.name.length != 0) {
-    const prisma = new PrismaClient();
     /** add new record */
     await prisma.category.create({
       data: {
@@ -30,5 +40,6 @@ export default async function handler(
     return
   }
 
+  await prisma.$disconnect();
   res.status(200).json({ message: "fail" });
 }
