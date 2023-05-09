@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client"
 
 interface AddCategory extends NextApiRequest {
   body: {
-    categoryId: string;
+    categoryId: number;
     itemName: string;
   };
 }
@@ -13,11 +13,13 @@ const handle = async (req: AddCategory, res: NextApiResponse) => {
   if (req.method == 'POST') {
     console.log(req.body.categoryId)
     console.log(req.body.itemName)
-    // await prisma.foodItem.create({
-    //   data: {
-    //     itemName: ""
-    //   }
-    // });
+    const { categoryId, itemName } = req.body
+    await prisma.foodItem.create({
+      data: {
+        categoryId: categoryId,
+        name: itemName
+      }
+    });
     res.status(200).json({ message: "success" });    
   }
 

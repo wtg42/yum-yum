@@ -38,7 +38,6 @@ const Create: NextPage = () => {
         const result: CreateCategoryResponse = await axios({
           method: "post",
           url: "/api/category/",
-          // headers: { "Content-Type": "application/json" },
           data: {
             name: categoryName,
           },

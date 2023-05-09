@@ -37,6 +37,7 @@ model FoodItem {
   name       String   @default("")
   categoryId Int      @default(0)
   price      Int      @default(0)
+  isShow     Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

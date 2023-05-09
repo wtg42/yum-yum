@@ -1,16 +1,11 @@
-/*
-  Warnings:
-
-  - Added the required column `categoryId` to the `FoodItem` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
 CREATE TABLE "new_FoodItem" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "categoryId" INTEGER NOT NULL,
-    "price" INTEGER NOT NULL,
+    "name" TEXT NOT NULL DEFAULT '',
+    "categoryId" INTEGER NOT NULL DEFAULT 0,
+    "price" INTEGER NOT NULL DEFAULT 0,
+    "isShow" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
