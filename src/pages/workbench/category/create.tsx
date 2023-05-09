@@ -14,13 +14,13 @@ import {
 } from "@chakra-ui/react";
 import axios, { type AxiosResponse } from "axios";
 
-interface AddCategoryResponse extends AxiosResponse {
+interface CreateCategoryResponse extends AxiosResponse {
   data: {
     message: string;
   };
 }
 
-const AddCategory: NextPage = () => {
+const Create: NextPage = () => {
   const inputNameRef = useRef(null);
   const domainNameRef = useRef("");
   const toast = useToast();
@@ -35,9 +35,8 @@ const AddCategory: NextPage = () => {
     onSubmit: async (value) => {
       const { categoryName } = value;
       try {
-        const result: AddCategoryResponse = await axios({
+        const result: CreateCategoryResponse = await axios({
           method: "post",
-          baseURL: "http://localhost:3000",
           url: "/api/category/",
           // headers: { "Content-Type": "application/json" },
           data: {
@@ -93,4 +92,4 @@ const AddCategory: NextPage = () => {
   );
 };
 
-export default AddCategory;
+export default Create;

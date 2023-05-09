@@ -8,6 +8,7 @@ import {
   Heading,
   Input,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { Formik } from "formik";
@@ -15,19 +16,41 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { type AxiosResponse } from "axios";
 
+/** 為了解析 api 物件內容 */
 interface AxiosResponseWithCategory extends AxiosResponse {
   data: {
     categories: [];
   };
 }
+
+/** select 元件資料的物件接口 */
 interface SelectOption {
   id: number;
   name: string;
 }
-const AddFoodItem: NextPage = () => {
+
+/** 動態設定 Formik 初始值 */
+type InitialFormValue = {
+  fooditemName: string;
+  categoryId: number;
+}
+
+interface CreateFoodItemResponse extends AxiosResponse {
+  data: {
+    message: string
+  }
+}
+
+const Create: NextPage = () => {
+  /** select 元件內容 */
   const [selectOptionData, setSelectOptionData] = useState(
     [] as SelectOption[],
   );
+
+  const [initialFormValue, setInitialFormValue] = useState<InitialFormValue>({ 
+    fooditemName: "",
+    categoryId: 0
+  })
 
   /** 取得菜單類別 */
   useEffect(() => {
@@ -35,14 +58,19 @@ const AddFoodItem: NextPage = () => {
     const getCategory = async () => {
       try {
         const res: AxiosResponseWithCategory = await axios.get(
-          "http://localhost:3000/api/category/",
+          "/api/category/",
         );
         console.log("set data here.", res.data.categories);
         const apiData = res.data.categories as SelectOption[];
-        setSelectOptionData((prev) => {
-          prev = apiData;
-          return prev;
+        /** 填充 select option 的內容 */
+        setSelectOptionData((_prev) => {
+          return apiData
         });
+
+        /** 動態設定 formik initialValues */
+        setInitialFormValue((_prev) => {
+          return { fooditemName: apiData[0]?.name, categoryId: apiData[0]?.id } as InitialFormValue
+        })
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.log(error);
@@ -53,6 +81,9 @@ const AddFoodItem: NextPage = () => {
     };
     void getCategory();
   }, []);
+
+  /** toast */
+  const toast = useToast()
   return (
     <Flex bgColor={"gray.100"} align={"center"} justify={"center"} h={"100vh"}>
       <Box h={"50vh"} bgColor={"white"} p={6}>
@@ -60,26 +91,46 @@ const AddFoodItem: NextPage = () => {
           <Heading>新增菜單</Heading>
         </Center>
         <Formik
-          initialValues={{ name: "" }}
-          onSubmit={(value) => {
-            console.log("values:::", value);
-            console.log("submit data here!");
+          enableReinitialize
+          initialValues={initialFormValue}
+          onSubmit={async ({fooditemName, categoryId}) => {
+            try {
+              const f = {
+                categoryId: categoryId,
+                itemName: fooditemName
+              }
+              const res: CreateFoodItemResponse = await axios({
+                method: "POST",
+                url: "/api/fooditem/",
+                data: f,
+              })
+              toast({description: res.data.message})
+            } catch (error) {
+              if (axios.isAxiosError(error)) {
+                toast({
+                  description: error.message
+                })
+              } else {
+                console.log(error)
+              }
+            }
           }}
         >
           {(props) => (
             <form onSubmit={props.handleSubmit}>
               <FormControl mb={3}>
-                <FormLabel htmlFor="name">名稱</FormLabel>
+                <FormLabel htmlFor="fooditemName">名稱</FormLabel>
                 <Input
-                  id="name"
+                  id="fooditemName"
                   name="fooditemName"
                   colorScheme="blue"
                   placeContent="輸入分類項目"
+                  onChange={props.handleChange}
                 >
                 </Input>
               </FormControl>
               <FormControl mb={3}>
-                <Select>
+                <Select id="categoryId" name="categoryId" onChange={props.handleChange}>
                   {selectOptionData.map((item) => {
                     return (
                       <option key={item.id} value={item.id}>{item.name}</option>
@@ -102,4 +153,4 @@ const AddFoodItem: NextPage = () => {
   );
 };
 
-export default AddFoodItem;
+export default Create;

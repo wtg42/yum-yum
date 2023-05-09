@@ -20,7 +20,6 @@ export default async function handler(
   const prisma = new PrismaClient();
 
   if (req.method == "GET") {
-    console.log("GET here::", req.method)
     const categories = await prisma.category.findMany()
     await prisma.$disconnect();
 
