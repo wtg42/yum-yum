@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useFormik } from "formik";
 import {
   Box,
@@ -22,12 +22,7 @@ interface CreateCategoryResponse extends AxiosResponse {
 
 const Create: NextPage = () => {
   const inputNameRef = useRef(null);
-  const domainNameRef = useRef("");
   const toast = useToast();
-  useEffect(() => {
-    const hostname = window.location.hostname;
-    domainNameRef.current = hostname;
-  }, [domainNameRef]);
   const formik = useFormik({
     initialValues: {
       categoryName: "",

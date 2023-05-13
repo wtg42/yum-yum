@@ -7,6 +7,10 @@ import miStyles from "./MateriaIcon.module.css";
 interface MateriaIconProps {
   barStatus: string;
   sideBarSetter: Dispatch<SetStateAction<string>>;
+  maskProps: {
+    mask: string;
+    setMask: Dispatch<SetStateAction<string>>;
+  }
   children?: ReactNode;
 }
 const MateriaIcon = (props: MateriaIconProps) => {
@@ -16,10 +20,14 @@ const MateriaIcon = (props: MateriaIconProps) => {
   /** 點擊 menu icon 切換 open | close 狀態 */
   const iconClick = () => {
     openSideBar((prev) => {
-      /** 初始值是空白代表預設關閉 side bar 直接 open */      
+      /** 初始值是空白代表預設關閉 side bar 直接 open */
       if (prev.trim() == "") {
+        props.maskProps.setMask((_prev) => {
+          return "block"
+        });
         return "open"
       }
+      props.maskProps.setMask(prev => (prev == "hidden") ? "block" : "hidden")
       return (prev == "close") ? "open" : "close";
     });
   };
@@ -27,9 +35,7 @@ const MateriaIcon = (props: MateriaIconProps) => {
   return (
     <div
       onClick={iconClick}
-      className={`${
-        hoverClass ?? ""
-      } w-12 h-12 flex justify-center items-center flex-shrink-0 rounded-full`}
+      className={`${hoverClass ?? ""} w-12 h-12 flex justify-center items-center flex-shrink-0 rounded-full`}
     >
       <span className={miStyles["material-symbols-rounded"]}>
         {props.children}

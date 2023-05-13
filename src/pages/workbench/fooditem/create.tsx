@@ -47,20 +47,18 @@ const Create: NextPage = () => {
     [] as SelectOption[],
   );
 
-  const [initialFormValue, setInitialFormValue] = useState<InitialFormValue>({ 
+  const [initialFormValue, setInitialFormValue] = useState<InitialFormValue>({
     fooditemName: "",
     categoryId: 0
   })
 
   /** 取得菜單類別 */
   useEffect(() => {
-    console.log("get category here!");
     const getCategory = async () => {
       try {
         const res: AxiosResponseWithCategory = await axios.get(
           "/api/category/",
         );
-        console.log("set data here.", res.data.categories);
         const apiData = res.data.categories as SelectOption[];
         /** 填充 select option 的內容 */
         setSelectOptionData((_prev) => {
@@ -93,7 +91,7 @@ const Create: NextPage = () => {
         <Formik
           enableReinitialize
           initialValues={initialFormValue}
-          onSubmit={async ({fooditemName, categoryId}) => {
+          onSubmit={async ({ fooditemName, categoryId }) => {
             try {
               const f = {
                 categoryId: categoryId,
@@ -104,7 +102,7 @@ const Create: NextPage = () => {
                 url: "/api/fooditem/",
                 data: f,
               })
-              toast({description: res.data.message})
+              toast({ description: res.data.message })
             } catch (error) {
               if (axios.isAxiosError(error)) {
                 toast({
