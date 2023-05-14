@@ -42,7 +42,6 @@ const Create: NextPage = () => {
         });
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          console.log(error.message);
           toast({
             description: error.message,
           });
