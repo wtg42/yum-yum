@@ -1,5 +1,5 @@
 import { type NextApiRequest, type NextApiResponse } from "next"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "src/server/db"
 
 interface AddCategory extends NextApiRequest {
   body: {
@@ -9,10 +9,7 @@ interface AddCategory extends NextApiRequest {
 }
 
 const handle = async (req: AddCategory, res: NextApiResponse) => {
-  const prisma = new PrismaClient()
   if (req.method == 'POST') {
-    console.log(req.body.categoryId)
-    console.log(req.body.itemName)
     const { categoryId, itemName } = req.body
     await prisma.foodItem.create({
       data: {
@@ -20,7 +17,8 @@ const handle = async (req: AddCategory, res: NextApiResponse) => {
         name: itemName
       }
     });
-    res.status(200).json({ message: "success" });    
+    await prisma.$disconnect()
+    res.status(200).json({ message: "success" });
   }
 
   await prisma.$disconnect()

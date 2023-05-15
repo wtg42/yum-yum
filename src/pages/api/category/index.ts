@@ -1,5 +1,5 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "src/server/db";
 
 interface AddCategory extends NextApiRequest {
   body: {
@@ -16,8 +16,6 @@ export default async function handler(
     "Access-Control-Allow-Headers",
     "X-Requested-With, Content-Type",
   );
-
-  const prisma = new PrismaClient();
 
   if (req.method == "GET") {
     const categories = await prisma.category.findMany()
