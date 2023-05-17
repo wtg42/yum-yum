@@ -7,7 +7,7 @@
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import MateriaIcon from "./MateriaIcon";
 import sbStyles from "./SideBar.module.css";
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, Skeleton } from "@chakra-ui/react";
 import axios, { type AxiosResponse } from "axios";
 
 interface SideBarProps {
@@ -41,6 +41,8 @@ const SideBar = (props: SideBarProps) => {
   /** 側邊欄位菜單項目 */
   const [categories, setCategories] = useState([]);
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   /** 監看 open 還是 close 附加開關動畫 */
   useEffect(() => {
     if (barStatus == "close") {
@@ -63,9 +65,12 @@ const SideBar = (props: SideBarProps) => {
     };
 
     try {
+      setIsLoaded(false)
       getCategory().catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoaded(true)
     }
   }, []);
 
@@ -83,6 +88,7 @@ const SideBar = (props: SideBarProps) => {
         </MateriaIcon>
       </div>
       <Flex direction="column" alignItems="center">
+        <Skeleton fadeDuration={2} isLoaded={isLoaded}>
         {
           categories.map((item: Category) => {
             return <Button my={3} key={item.id}
@@ -96,7 +102,7 @@ const SideBar = (props: SideBarProps) => {
             >{item?.name}</Button>
           })
         }
-
+        </Skeleton>
       </Flex>
     </nav>
   );
