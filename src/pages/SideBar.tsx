@@ -43,6 +43,23 @@ const SideBar = (props: SideBarProps) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const getCategory = async (): Promise<void> => {
+    try {
+      setIsLoaded(false);
+      const res: CreateFoodItemResponse = await axios({
+        method: "get",
+        url: "/api/category/",
+      });
+      if (res.data.message == "success") {
+        setCategories((_prev) => res.data.categories);
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoaded(true);
+    }
+  };
+
   /** 監看 open 還是 close 附加開關動畫 */
   useEffect(() => {
     if (barStatus == "close") {
@@ -52,27 +69,31 @@ const SideBar = (props: SideBarProps) => {
     }
   }, [barStatus]);
 
-  /** 這邊儲存 */
-  useEffect(() => {
-    const getCategory = async (): Promise<void> => {
-      const res: CreateFoodItemResponse = await axios({
-        method: "get",
-        url: "/api/category/",
-      });
-      if (res.data.message == "success") {
-        setCategories(_prev => res.data.categories)
-      }
-    };
 
-    try {
-      setIsLoaded(false)
-      getCategory().catch((err) => console.log(err));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoaded(true)
-    }
+  /** 這邊 fetch 資料 */
+  useEffect(() => {
+    getCategory().catch((err) => console.log(err));
   }, []);
+
+  /**
+   * 空白讀取骨架 注意：Skeleton 元件裡面骨架寬度是會吃外距
+   * 要隔開每個物件需要在 Skeleton 外面再包一層使用外距才有效果
+   */
+  const emptySekleton = () => {
+    if (!isLoaded) {
+      return (
+        <Flex mb={3} direction="column" alignItems="center">
+          <Skeleton  fadeDuration={1} isLoaded={isLoaded}>
+            <Button
+              width={263}
+            >
+            </Button>
+          </Skeleton>
+        </Flex>
+      )
+    }
+    return null
+  }
 
   return (
     <nav
@@ -87,23 +108,28 @@ const SideBar = (props: SideBarProps) => {
           menu
         </MateriaIcon>
       </div>
-      <Flex direction="column" alignItems="center">
-        <Skeleton fadeDuration={2} isLoaded={isLoaded}>
-        {
-          categories.map((item: Category) => {
-            return <Button my={3} key={item.id}
-              width={263}
-              colorScheme="blue"
-              rounded={20}
-              _hover={{
-                background: "#e5e9ed",
-                color: "teal.500",
-              }}
-            >{item?.name}</Button>
-          })
-        }
-        </Skeleton>
-      </Flex>
+      {emptySekleton()}
+      {emptySekleton()}
+
+      <Skeleton fitContent={true} fadeDuration={1} isLoaded={isLoaded}>
+        <Flex direction="column" alignItems="center">
+          {categories.map((item: Category) => {
+            return (
+              <Button mb={3} key={item.id}
+                width={263}
+                colorScheme="blue"
+                rounded={20}
+                _hover={{
+                  background: "#e5e9ed",
+                  color: "teal.500",
+                }}
+              >
+                {item?.name}
+              </Button>
+            );
+          })}
+        </Flex>
+      </Skeleton>
     </nav>
   );
 };
