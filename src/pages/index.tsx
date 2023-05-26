@@ -6,7 +6,9 @@ import { api } from "~/utils/api";
 
 import Header from "./Header";
 import SideBar from "./SideBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { type FoodItem } from "@prisma/client";
+import sbrStyles from "./SideBar.module.css";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -14,7 +16,7 @@ const Home: NextPage = () => {
    * sidebar 的開關
    * Header 的 Icon 也可以打開 sidebar
    */
-  const [sideBar, setSideBar] = useState(() => "");
+  const [sideBar, setSideBar] = useState<boolean | undefined>();
   const [mask, setMask] = useState(() => "");
   const maskProps = {
     "mask": mask,
@@ -28,6 +30,43 @@ const Home: NextPage = () => {
     })
   }, [])
 
+  const classname = useRef("")
+
+  const switchSideBar = () => {
+    setSideBar(prev => {
+      // 初始值直接給予開啟動畫
+      if (typeof prev == 'undefined') {
+        classname.current = sbrStyles['sidebar-animation-open'] as string
+        return true
+      }
+
+      // 已經打開 故給予關閉動畫
+      if (prev) {
+        classname.current = sbrStyles['sidebar-animation-close'] as string
+      }
+
+      // 反之已經關閉 給予開啟動畫
+      if (!prev) {
+        classname.current = sbrStyles['sidebar-animation-open'] as string
+      }
+
+      return !prev
+    })
+  }
+
+
+  /**
+   * 主畫面菜單顯示
+   * SideBar 點擊類別這裡會顯示菜單內容
+   */
+  const [fooditems, setFooditems] = useState<FoodItem[]>([]);
+
+  /** SideBar onClick 呼叫上層這個函數顯示菜單 */
+  const handleCategoryOnClick = (items: [FoodItem]) => {
+    setFooditems(items)
+    console.log("->>", fooditems)
+  }
+
   return (
     <>
       <Head>
@@ -36,8 +75,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div id="menu-mask" className={`${mask} z-10 fixed inset-0 bg-slate-500/50`}></div>
-      <Header maskProps={maskProps} barStatus={sideBar} sideBarSetter={setSideBar}></Header>
-      <SideBar maskProps={maskProps} barStatus={sideBar} sideBarSetter={setSideBar}></SideBar>
+      <Header maskProps={maskProps} switchSideBar={switchSideBar}></Header>
+      <SideBar categoryOnClick={handleCategoryOnClick} maskProps={maskProps} animationClassName={classname.current} switchSideBar={switchSideBar}></SideBar>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">

@@ -16,7 +16,7 @@ export default async function handler(
     "Access-Control-Allow-Headers",
     "X-Requested-With, Content-Type",
   );
-  await delay(2000)
+
   if (req.method == "GET") {
     const categories = await prisma.category.findMany()
     await prisma.$disconnect();
@@ -39,8 +39,4 @@ export default async function handler(
 
   await prisma.$disconnect();
   res.status(200).json({ message: "fail" });
-}
-
-function delay(time: number) {
-  return new Promise(resolve => setTimeout(resolve, time));
 }

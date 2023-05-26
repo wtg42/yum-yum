@@ -5,8 +5,7 @@ import { type Dispatch, type ReactNode, type SetStateAction } from "react";
 import miStyles from "./MateriaIcon.module.css";
 
 interface MateriaIconProps {
-  barStatus: string;
-  sideBarSetter: Dispatch<SetStateAction<string>>;
+  switchSideBar: () => void;
   maskProps: {
     mask: string;
     setMask: Dispatch<SetStateAction<string>>;
@@ -15,21 +14,10 @@ interface MateriaIconProps {
 }
 const MateriaIcon = (props: MateriaIconProps) => {
   const hoverClass = miStyles["materia-icon-btn-bg"];
-  const openSideBar = props.sideBarSetter;
 
   /** 點擊 menu icon 切換 open | close 狀態 */
   const iconClick = () => {
-    openSideBar((prev) => {
-      /** 初始值是空白代表預設關閉 side bar 直接 open */
-      if (prev.trim() == "") {
-        props.maskProps.setMask((_prev) => {
-          return "block"
-        });
-        return "open"
-      }
-      props.maskProps.setMask(prev => (prev == "hidden") ? "block" : "hidden")
-      return (prev == "close") ? "open" : "close";
-    });
+    props.switchSideBar()
   };
 
   return (
