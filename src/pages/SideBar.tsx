@@ -4,7 +4,7 @@
  * 收折時候會順便關閉遮罩
  */
 
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState, useTransition } from "react";
 import MateriaIcon from "./MateriaIcon";
 import { Button, Flex, Skeleton } from "@chakra-ui/react";
 import axios, { type AxiosResponse } from "axios";
@@ -13,7 +13,6 @@ import { type FoodItem } from "@prisma/client";
 /** 側邊欄 props */
 interface SideBarProps {
   animationClassName: string;
-  switchSideBar: () => void;
   maskProps: {
     mask: string;
     setMask: Dispatch<SetStateAction<string>>;
@@ -69,17 +68,20 @@ const SideBar = (props: SideBarProps) => {
     getCategory().catch((err) => console.log(err));
   }, []);
 
+  const [, startTransition] = useTransition()
   /**
    * 點擊按鈕取得該類別下的 fooditem 然後關閉 SideBar & Mask
    * onClick 寫 async await 好像會有返回 void 型別錯誤產生
    * 功能沒問題，換 Promise 寫法就不會有問題了
    */
   const showFoodItem = () => {
-    axios.get('/api/fooditem/')
-    .then((res: CategoryFoodItemResponse) => {
-      props.categoryOnClick(res.data.fooditems);
+    startTransition(() => {
+      axios.get('/api/fooditem/')
+      .then((res: CategoryFoodItemResponse) => {
+        props.categoryOnClick(res.data.fooditems);
+      })
+      .catch(err => console.log(err))
     })
-    .catch(err => console.log(err))
   }
 
   /**
@@ -133,7 +135,7 @@ const SideBar = (props: SideBarProps) => {
       className={`${animationClassName} z-20 left-[-320px] flex flex-col items-center justify-start absolute w-[320px] h-full rounded-r-2xl bg-[#f3f6fc]`}
     >
       <div className="flex justify-start items-center w-full h-16">
-      <MateriaIcon maskProps={props.maskProps} switchSideBar={props.switchSideBar}>menu</MateriaIcon>
+      <MateriaIcon>menu</MateriaIcon>
       </div>
       {emptySekleton()}
       {emptySekleton()}
