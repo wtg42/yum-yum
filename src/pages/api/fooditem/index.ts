@@ -19,9 +19,18 @@ const handle = async (req: AddCategory, res: NextApiResponse) => {
     });
     await prisma.$disconnect()
     res.status(200).json({ message: "success" });
+    return
+  }
+  if (req.method == 'GET') {
+    const f =  await prisma.foodItem.findMany()
+
+    await prisma.$disconnect()
+    res.status(200).json({ message: "success", fooditems: f});
+    return
   }
 
   await prisma.$disconnect()
+  res.status(200).json({ message: "success" });
 }
 
 export default handle
