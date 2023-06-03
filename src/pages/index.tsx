@@ -10,6 +10,7 @@ import FoodItemCard from "~/components/FoodItemCard.tsx";
 import { useEffect, useState, useRef } from "react";
 import { type FoodItem } from "@prisma/client";
 import { useSideBar } from "../utils/SideBarProvider.tsx"
+import { VStack, StackDivider } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -73,7 +74,16 @@ const Home: NextPage = () => {
         animationClassName={classname.current}
       />
       <main className="flex min-h-screen flex-col items-center justify-center bg-[#fff5ed]">
-        <FoodItemCard></FoodItemCard>
+        <VStack h="auto" divider={<StackDivider borderColor='gray.200' />} spacing="20px;">
+        {
+          fooditems.map((item, index) => {
+            console.log("item::", item);
+            console.log("index:", index)
+            return <FoodItemCard key={item.id} name={item.name} price={item.price}></FoodItemCard>
+          })
+        }
+        </VStack>
+
       </main>
     </>
   );

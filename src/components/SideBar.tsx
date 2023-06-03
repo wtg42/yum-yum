@@ -133,7 +133,7 @@ const SideBar = (props: SideBarProps) => {
 
   return (
     <nav
-      className={`${animationClassName} z-20 left-[-320px] flex flex-col items-center justify-start absolute w-[320px] h-full rounded-r-2xl bg-[#f3f6fc]`}
+      className={`${animationClassName} fixed z-50 left-[-320px] flex flex-col items-center justify-start w-[320px] h-full rounded-r-2xl bg-[#f3f6fc]`}
     >
       <div className="flex justify-start items-center w-full h-16">
       <MateriaIcon>menu</MateriaIcon>
