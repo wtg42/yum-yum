@@ -4,19 +4,16 @@
  * 收折時候會順便關閉遮罩
  */
 
-import { type Dispatch, type SetStateAction, useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import MateriaIcon from "./MateriaIcon";
 import { Button, Flex, Skeleton } from "@chakra-ui/react";
 import axios, { type AxiosResponse } from "axios";
 import { type FoodItem } from "@prisma/client";
+import { useSideBarToggle } from "~/utils/SideBarProvider";
 
 /** 側邊欄 props */
 interface SideBarProps {
   animationClassName: string;
-  maskProps: {
-    mask: string;
-    setMask: Dispatch<SetStateAction<string>>;
-  };
   categoryOnClick: (items: [FoodItem]) => void
 }
 
@@ -36,6 +33,8 @@ interface CategoryFoodItemResponse extends AxiosResponse {
 }
 
 const SideBar = (props: SideBarProps) => {
+  const sideBarToggle = useSideBarToggle()
+
   /** true | false */
   const { animationClassName } = props;
 
@@ -74,10 +73,12 @@ const SideBar = (props: SideBarProps) => {
    * onClick 寫 async await 好像會有返回 void 型別錯誤產生
    * 功能沒問題，換 Promise 寫法就不會有問題了
    */
-  const showFoodItem = () => {
+  const handleOnClick = () => {
+    sideBarToggle() // 先關掉 sidebar 在開始取資料
     startTransition(() => {
       axios.get('/api/fooditem/')
       .then((res: CategoryFoodItemResponse) => {
+        // 傳回 index.tsx 顯示
         props.categoryOnClick(res.data.fooditems);
       })
       .catch(err => console.log(err))
@@ -111,7 +112,7 @@ const SideBar = (props: SideBarProps) => {
         <Flex direction="column" alignItems="center">
           {categories.map((item: Category) => {
             return (
-              <Button onClick={showFoodItem} mb={3} key={item.id}
+              <Button onClick={handleOnClick} mb={3} key={item.id}
                 width={263}
                 colorScheme="blue"
                 rounded={20}

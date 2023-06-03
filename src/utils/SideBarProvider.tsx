@@ -6,9 +6,7 @@ import {
 
 type contextDefaultValue = () => void
 const SideBarContext = createContext(false)
-const SideBarToggleContext = createContext<contextDefaultValue>(() => {
-  return
-})
+const SideBarToggleContext = createContext<contextDefaultValue>(() => { return })
 
 export function useSideBar() {
   return useContext(SideBarContext)
