@@ -95,7 +95,9 @@ const Create: NextPage = () => {
             try {
               const f = {
                 categoryId: categoryId,
-                itemName: fooditemName
+                itemName: fooditemName,
+                price: 450,
+                isShow: false,
               }
               const res: CreateFoodItemResponse = await axios({
                 method: "POST",
@@ -121,13 +123,25 @@ const Create: NextPage = () => {
                 <Input
                   id="fooditemName"
                   name="fooditemName"
-                  colorScheme="blue"
+                  colorScheme="blue "
                   placeContent="輸入分類項目"
                   onChange={props.handleChange}
                 >
                 </Input>
               </FormControl>
               <FormControl mb={3}>
+                <FormLabel htmlFor="fooditemPrice">Price</FormLabel>
+                <Input
+                  id="fooditemPrice"
+                  name="fooditemPrice"
+                  colorScheme="blue "
+                  placeContent="輸入分類項目"
+                  onChange={props.handleChange}
+                >
+                </Input>
+              </FormControl>
+              <FormControl mb={3}>
+                <FormLabel htmlFor="categoryId">類別</FormLabel>
                 <Select id="categoryId" name="categoryId" onChange={props.handleChange}>
                   {selectOptionData.map((item) => {
                     return (

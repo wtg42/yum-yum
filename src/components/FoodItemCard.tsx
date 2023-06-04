@@ -8,7 +8,6 @@ import {
   Heading,
   Stack,
   Text,
-  Skeleton,
 } from "@chakra-ui/react";
 
 type FoodItemCardProp = {

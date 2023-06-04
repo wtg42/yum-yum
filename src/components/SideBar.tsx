@@ -14,7 +14,7 @@ import { useSideBarToggle } from "~/utils/SideBarProvider";
 /** 側邊欄 props */
 interface SideBarProps {
   animationClassName: string;
-  categoryOnClick: (items: [FoodItem]) => void
+  categoryOnClick: (items: [FoodItem]) => void;
 }
 
 /** 類別街口 */
@@ -33,7 +33,7 @@ interface CategoryFoodItemResponse extends AxiosResponse {
 }
 
 const SideBar = (props: SideBarProps) => {
-  const sideBarToggle = useSideBarToggle()
+  const sideBarToggle = useSideBarToggle();
 
   /** true | false */
   const { animationClassName } = props;
@@ -56,7 +56,7 @@ const SideBar = (props: SideBarProps) => {
         setCategories((_prev) => res.data.categories);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
       setIsLoaded(true);
     }
@@ -67,23 +67,23 @@ const SideBar = (props: SideBarProps) => {
     getCategory().catch((err) => console.log(err));
   }, []);
 
-  const [, startTransition] = useTransition()
+  const [, startTransition] = useTransition();
   /**
    * 點擊按鈕取得該類別下的 fooditem 然後關閉 SideBar & Mask
    * onClick 寫 async await 好像會有返回 void 型別錯誤產生
    * 功能沒問題，換 Promise 寫法就不會有問題了
    */
-  const handleOnClick = () => {
-    sideBarToggle() // 先關掉 sidebar 在開始取資料
+  const handleOnClick = (categoryId: number) => {
+    sideBarToggle(); // 先關掉 sidebar 在開始取資料
     startTransition(() => {
-      axios.get('/api/fooditem/')
-      .then((res: CategoryFoodItemResponse) => {
-        // 傳回 index.tsx 顯示
-        props.categoryOnClick(res.data.fooditems);
-      })
-      .catch(err => console.log(err))
-    })
-  }
+      axios.get(`/api/fooditem/${categoryId}`)
+        .then((res: CategoryFoodItemResponse) => {
+          // 傳回 index.tsx 顯示
+          props.categoryOnClick(res.data.fooditems);
+        })
+        .catch((err) => console.log(err));
+    });
+  };
 
   /**
    * 空白讀取骨架 注意：Skeleton 元件裡面骨架寬度是會吃外距
@@ -93,17 +93,17 @@ const SideBar = (props: SideBarProps) => {
     if (!isLoaded && categories && categories.length <= 0) {
       return (
         <Flex mb={3} direction="column" alignItems="center">
-          <Skeleton  fadeDuration={1} isLoaded={isLoaded}>
+          <Skeleton fadeDuration={1} isLoaded={isLoaded}>
             <Button
               width={263}
             >
             </Button>
           </Skeleton>
         </Flex>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   /** 如果已經有產品項目就不需要 skeleton 顯示 */
   const categoryElement = () => {
@@ -112,7 +112,12 @@ const SideBar = (props: SideBarProps) => {
         <Flex direction="column" alignItems="center">
           {categories.map((item: Category) => {
             return (
-              <Button onClick={handleOnClick} mb={3} key={item.id}
+              <Button
+                onClick={() => {
+                  handleOnClick(item.id);
+                }}
+                mb={3}
+                key={item.id}
                 width={263}
                 colorScheme="blue"
                 rounded={20}
@@ -126,17 +131,17 @@ const SideBar = (props: SideBarProps) => {
             );
           })}
         </Flex>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <nav
       className={`${animationClassName} fixed z-50 left-[-320px] flex flex-col items-center justify-start w-[320px] h-full rounded-r-2xl bg-[#f3f6fc]`}
     >
       <div className="flex justify-start items-center w-full h-16">
-      <MateriaIcon>menu</MateriaIcon>
+        <MateriaIcon>menu</MateriaIcon>
       </div>
       {emptySekleton()}
       {emptySekleton()}

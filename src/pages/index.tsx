@@ -5,17 +5,17 @@ import Head from "next/head";
 
 import Header from "../components/Header";
 import SideBar from "../components/SideBar";
-import sbrStyles from "../components/SideBar.module.css"
+import sbrStyles from "../components/SideBar.module.css";
 import FoodItemCard from "~/components/FoodItemCard.tsx";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type FoodItem } from "@prisma/client";
-import { useSideBar } from "../utils/SideBarProvider.tsx"
-import { VStack, StackDivider } from "@chakra-ui/react";
+import { useSideBar } from "../utils/SideBarProvider.tsx";
+import { StackDivider, VStack } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
-  const sideBar = useSideBar()
+  const sideBar = useSideBar();
 
   /** SideBar animation class */
   const classname = useRef("");
@@ -24,25 +24,25 @@ const Home: NextPage = () => {
 
   /** 預設把遮罩關閉 */
   useEffect(() => {
-    setMask('hidden')
+    setMask("hidden");
   }, []);
 
   useEffect(() => {
     if (!sideBar && classname.current == "") {
-      return
+      return;
     }
 
     if (!sideBar) {
       classname.current = sbrStyles["sidebar-animation-close"] as string;
-      setMask('hidden')
+      setMask("hidden");
     }
 
     // 反之已經關閉 給予開啟動畫
     if (sideBar) {
       classname.current = sbrStyles["sidebar-animation-open"] as string;
-      setMask('block')
+      setMask("block");
     }
-  }, [sideBar])
+  }, [sideBar]);
 
   /**
    * 主畫面菜單顯示
@@ -74,16 +74,17 @@ const Home: NextPage = () => {
         animationClassName={classname.current}
       />
       <main className="flex min-h-screen flex-col items-center justify-center bg-[#fff5ed]">
-        <VStack h="auto" divider={<StackDivider borderColor='gray.200' />} spacing="20px;">
-        {
-          fooditems.map((item, index) => {
-            console.log("item::", item);
-            console.log("index:", index)
-            return <FoodItemCard key={item.id} name={item.name} price={item.price}></FoodItemCard>
-          })
-        }
+        <VStack
+          h="auto"
+          divider={<StackDivider borderColor="gray.200" />}
+          spacing="20px;"
+        >
+          {fooditems.map((item) => {
+            return (
+              <FoodItemCard key={item.id} name={item.name} price={item.price} />
+            );
+          })}
         </VStack>
-
       </main>
     </>
   );
