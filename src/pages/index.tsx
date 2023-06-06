@@ -10,7 +10,7 @@ import FoodItemCard from "~/components/FoodItemCard.tsx";
 import { useEffect, useRef, useState } from "react";
 import { type FoodItem } from "@prisma/client";
 import { useSideBar } from "../utils/SideBarProvider.tsx";
-import { StackDivider, VStack } from "@chakra-ui/react";
+import { StackDivider, VStack, Progress } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -50,9 +50,12 @@ const Home: NextPage = () => {
    */
   const [fooditems, setFooditems] = useState<FoodItem[]>([]);
 
-  /** SideBar onClick 呼叫上層這個函數顯示菜單 */
+  const [progress, setProgress] = useState(false)
+
+  /** SideBar onClick 呼叫這個函數顯示菜單 */
   const handleCategoryOnClick = (items: [FoodItem]) => {
     setFooditems(items);
+    setProgress(false)
     console.log("->>", fooditems);
   };
 
@@ -69,7 +72,9 @@ const Home: NextPage = () => {
       >
       </div>
       <Header />
+      { progress && <Progress size='xs' isIndeterminate className="fixed top-16 z-50" /> }
       <SideBar
+        onProgress={setProgress}
         categoryOnClick={handleCategoryOnClick}
         animationClassName={classname.current}
       />

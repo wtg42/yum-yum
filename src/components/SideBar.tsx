@@ -4,7 +4,7 @@
  * 收折時候會順便關閉遮罩
  */
 
-import { useEffect, useState, useTransition } from "react";
+import {useEffect, useState, useTransition, type SetStateAction, type Dispatch } from "react";
 import MateriaIcon from "./MateriaIcon";
 import { Button, Flex, Skeleton } from "@chakra-ui/react";
 import axios, { type AxiosResponse } from "axios";
@@ -13,6 +13,7 @@ import { useSideBarToggle } from "~/utils/SideBarProvider";
 
 /** 側邊欄 props */
 interface SideBarProps {
+  onProgress: Dispatch<SetStateAction<boolean>>
   animationClassName: string;
   categoryOnClick: (items: [FoodItem]) => void;
 }
@@ -74,6 +75,8 @@ const SideBar = (props: SideBarProps) => {
    * 功能沒問題，換 Promise 寫法就不會有問題了
    */
   const handleOnClick = (categoryId: number) => {
+    console.log("sss")
+    props.onProgress(true)
     sideBarToggle(); // 先關掉 sidebar 在開始取資料
     startTransition(() => {
       axios.get(`/api/fooditem/${categoryId}`)
