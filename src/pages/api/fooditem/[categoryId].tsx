@@ -29,7 +29,7 @@ const handle = async (req: AddCategory, res: NextApiResponse) => {
     const { categoryId } = req.query
     const f = await prisma.foodItem.findMany({
       where: {
-        categoryId: Number(categoryId ?? 1),
+        categoryId: Number(categoryId),
       },
     })
 

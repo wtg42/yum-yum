@@ -11,16 +11,23 @@ import { useEffect, useRef, useState } from "react";
 import { type FoodItem } from "@prisma/client";
 import { useSideBar } from "../utils/SideBarProvider.tsx";
 import { StackDivider, VStack, Progress } from "@chakra-ui/react";
+import Announcement from "../components/Announcement.tsx";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   const sideBar = useSideBar();
 
   /** SideBar animation class */
   const classname = useRef("");
 
   const [mask, setMask] = useState(() => "");
+
+  const [ announcemnet, SetAnnouncement] = useState(true);
+
+  function handleHeaderTitleClick() {
+    setFooditems([])
+    SetAnnouncement(true)
+  }
 
   /** 預設把遮罩關閉 */
   useEffect(() => {
@@ -55,7 +62,8 @@ const Home: NextPage = () => {
   /** SideBar onClick 呼叫這個函數顯示菜單 */
   const handleCategoryOnClick = (items: [FoodItem]) => {
     setFooditems(items);
-    setProgress(false)
+    setProgress(false);
+    SetAnnouncement(false);
     console.log("->>", fooditems);
   };
 
@@ -71,7 +79,7 @@ const Home: NextPage = () => {
         className={`${mask} z-10 fixed inset-0 bg-slate-500/50`}
       >
       </div>
-      <Header />
+      <Header titleClick={handleHeaderTitleClick} />
       { progress && <Progress size='xs' isIndeterminate className="fixed top-16 z-50" /> }
       <SideBar
         onProgress={setProgress}
@@ -89,6 +97,8 @@ const Home: NextPage = () => {
               <FoodItemCard key={item.id} name={item.name} price={item.price} />
             );
           })}
+          { announcemnet && <Announcement/>}
+
         </VStack>
       </main>
     </>
