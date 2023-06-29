@@ -7,30 +7,16 @@
 import {useEffect, useState, useTransition, type SetStateAction, type Dispatch } from "react";
 import MateriaIcon from "./MateriaIcon";
 import { Button, Flex, Skeleton } from "@chakra-ui/react";
-import axios, { type AxiosResponse } from "axios";
+import axios from "axios";
 import { type FoodItem } from "@prisma/client";
 import { useSideBarToggle } from "~/utils/SideBarProvider";
+import { type CategoryFoodItemResponse, type Category } from "../custom"
 
 /** 側邊欄 props */
 interface SideBarProps {
   onProgress: Dispatch<SetStateAction<boolean>>
   animationClassName: string;
   categoryOnClick: (items: [FoodItem]) => void;
-}
-
-/** 類別街口 */
-interface Category {
-  id: number;
-  name: string;
-}
-
-// API Response 接口
-interface CategoryFoodItemResponse extends AxiosResponse {
-  data: {
-    message: string;
-    categories: [];
-    fooditems: [FoodItem];
-  };
 }
 
 const SideBar = (props: SideBarProps) => {

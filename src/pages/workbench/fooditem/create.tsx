@@ -1,3 +1,6 @@
+/**
+ * 後台新增菜單
+ */
 import {
   Box,
   Button,
@@ -8,10 +11,12 @@ import {
   Heading,
   Input,
   Select,
+  Textarea,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import { type NextPage } from "next";
-import { Formik } from "formik";
+import { Formik, type FormikProps } from "formik";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { type AxiosResponse } from "axios";
@@ -33,6 +38,7 @@ interface SelectOption {
 type InitialFormValue = {
   fooditemName: string;
   categoryId: number;
+  foodItemDescription: string;
 }
 
 interface CreateFoodItemResponse extends AxiosResponse {
@@ -49,7 +55,8 @@ const Create: NextPage = () => {
 
   const [initialFormValue, setInitialFormValue] = useState<InitialFormValue>({
     fooditemName: "",
-    categoryId: 0
+    categoryId: 0,
+    foodItemDescription: "",
   })
 
   /** 取得菜單類別 */
@@ -65,7 +72,7 @@ const Create: NextPage = () => {
           return apiData
         });
 
-        /** 動態設定 formik initialValues */
+        /** 用 api 動態設定 formik initialValues */
         setInitialFormValue((_prev) => {
           return { fooditemName: apiData[0]?.name, categoryId: apiData[0]?.id } as InitialFormValue
         })
@@ -82,43 +89,81 @@ const Create: NextPage = () => {
 
   /** toast */
   const toast = useToast()
+
+  /** select 元件輸出 */
+  function selectContents(props: FormikProps<InitialFormValue>) {
+    if (selectOptionData.length > 0) {
+      return (
+        <>
+          <FormLabel htmlFor="categoryId">類別</FormLabel>
+          <Select id="categoryId" name="categoryId" onChange={props.handleChange}>
+            {selectOptionData.map((item) => {
+              return (
+                <option key={item.id} value={item.id}>{item.name}</option>
+              );
+            })}
+          </Select>
+        </>
+      )
+    } else {
+      return (
+        <Flex align="center" justify="center">
+          <Spinner/>
+        </Flex>
+      )
+    }
+  }
+
+  const textAreaOnChange = (e: { target: { value: string; }; }) => {
+    const inputValue = e.target.value
+    console.log(inputValue)
+    setInitialFormValue(prev => {
+      return { ...prev, foodItemDescription: inputValue }
+    })
+  }
+
+  const createSubmit = async ({ fooditemName, categoryId, foodItemDescription }: InitialFormValue) => {
+    try {
+      console.log("ooo::", foodItemDescription)
+      const f = {
+        description: foodItemDescription,
+        categoryId: categoryId,
+        itemName: fooditemName,
+        price: 450,
+        isShow: false,
+      }
+      const res: CreateFoodItemResponse = await axios({
+        method: "POST",
+        url: "/api/fooditem/",
+        data: f,
+      })
+      toast({ description: res.data.message })
+    } catch (error) {
+      console.log(error)
+      if (axios.isAxiosError(error)) {
+        toast({
+          description: error.message
+        })
+      } else {
+        console.log(error)
+      }
+    }
+  }
+
   return (
     <Flex bgColor={"gray.100"} align={"center"} justify={"center"} h={"100vh"}>
-      <Box h={"50vh"} bgColor={"white"} p={6}>
+      <Box h="auto" bgColor={"white"} p={6}>
         <Center mb={6}>
           <Heading>新增菜單</Heading>
         </Center>
         <Formik
           enableReinitialize
           initialValues={initialFormValue}
-          onSubmit={async ({ fooditemName, categoryId }) => {
-            try {
-              const f = {
-                categoryId: categoryId,
-                itemName: fooditemName,
-                price: 450,
-                isShow: false,
-              }
-              const res: CreateFoodItemResponse = await axios({
-                method: "POST",
-                url: "/api/fooditem/",
-                data: f,
-              })
-              toast({ description: res.data.message })
-            } catch (error) {
-              if (axios.isAxiosError(error)) {
-                toast({
-                  description: error.message
-                })
-              } else {
-                console.log(error)
-              }
-            }
-          }}
+          onSubmit={createSubmit}
         >
           {(props) => (
             <form onSubmit={props.handleSubmit}>
-              <FormControl mb={3}>
+              <FormControl mb={3} isDisabled={selectOptionData.length <= 0}>
                 <FormLabel htmlFor="fooditemName">名稱</FormLabel>
                 <Input
                   id="fooditemName"
@@ -129,7 +174,7 @@ const Create: NextPage = () => {
                 >
                 </Input>
               </FormControl>
-              <FormControl mb={3}>
+              <FormControl mb={3} isDisabled={selectOptionData.length <= 0}>
                 <FormLabel htmlFor="fooditemPrice">Price</FormLabel>
                 <Input
                   id="fooditemPrice"
@@ -141,18 +186,15 @@ const Create: NextPage = () => {
                 </Input>
               </FormControl>
               <FormControl mb={3}>
-                <FormLabel htmlFor="categoryId">類別</FormLabel>
-                <Select id="categoryId" name="categoryId" onChange={props.handleChange}>
-                  {selectOptionData.map((item) => {
-                    return (
-                      <option key={item.id} value={item.id}>{item.name}</option>
-                    );
-                  })}
-                </Select>
+                {selectContents(props)}
+              </FormControl>
+              <FormControl mb="3" isDisabled={selectOptionData.length <= 0}>
+                <FormLabel htmlFor="foodItemDescription">Price</FormLabel>
+                <Textarea id="foodItemDescription" onChange={textAreaOnChange} placeholder="Enter your description here..."></Textarea>
               </FormControl>
               <FormControl>
                 <Center>
-                  <Button type="submit" colorScheme="blue" w={"full"}>
+                  <Button isDisabled={selectOptionData.length <= 0} type="submit" colorScheme="blue" w={"full"}>
                     送出
                   </Button>
                 </Center>

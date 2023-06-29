@@ -94,7 +94,7 @@ const Home: NextPage = () => {
         >
           {fooditems.map((item) => {
             return (
-              <FoodItemCard key={item.id} name={item.name} price={item.price} />
+              <FoodItemCard key={item.id} name={item.name} price={item.price} description={item.description} />
             );
           })}
           { announcemnet && <Announcement/>}

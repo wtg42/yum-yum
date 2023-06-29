@@ -12,13 +12,8 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import axios, { type AxiosResponse } from "axios";
-
-interface CreateCategoryResponse extends AxiosResponse {
-  data: {
-    message: string;
-  };
-}
+import axios from "axios";
+import { type CreateCategoryResponse } from "~/custom";
 
 const Create: NextPage = () => {
   const inputNameRef = useRef(null);

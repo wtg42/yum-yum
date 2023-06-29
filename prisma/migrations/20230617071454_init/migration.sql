@@ -30,6 +30,7 @@ CREATE TABLE "FoodItem" (
     "categoryId" INTEGER NOT NULL DEFAULT 0,
     "price" INTEGER NOT NULL DEFAULT 0,
     "isShow" BOOLEAN NOT NULL DEFAULT false,
+    "description" TEXT NOT NULL DEFAULT '',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

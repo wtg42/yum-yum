@@ -1,3 +1,6 @@
+/**
+ * 主頁面顯示各分類內的菜單項目
+ */
 import {
   Button,
   Card,
@@ -16,6 +19,7 @@ import { useRouter } from "next/router"
 type FoodItemCardProp = {
   name: string;
   price: number;
+  description: string;
 };
 
 const FoodItemCard = (props: FoodItemCardProp) => {
@@ -24,15 +28,15 @@ const FoodItemCard = (props: FoodItemCardProp) => {
 
   function handleClick() {
     console.log("TO DO: 跳轉產品客製頁面")
-    router.push('/FoodItemOrder/11').catch(err => console.log(err))
+    router.push('/order/11').catch(err => console.log(err))
   }
   return (
-    <Card maxW="sm">
+    <Card maxW="xl" minW="xl">
       <CardHeader>
         <Stack m="2" spacing="3">
           <Heading size="md">{props.name}</Heading>
           <Text>
-            TO DO: Esse reprehenderit quis exercitation consectetur laborum reprehenderit incididunt veniam dolore consectetur eiusmod reprehenderit aute enim.
+            {props.description}
           </Text>
         </Stack>
       </CardHeader>

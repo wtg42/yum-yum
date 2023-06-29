@@ -3,6 +3,7 @@ import { prisma } from "src/server/db"
 
 interface AddCategory extends NextApiRequest {
   body: {
+    description: string;
     categoryId: number;
     itemName: string;
     isShow: boolean;
@@ -12,9 +13,10 @@ interface AddCategory extends NextApiRequest {
 
 const handle = async (req: AddCategory, res: NextApiResponse) => {
   if (req.method == 'POST') {
-    const { categoryId, itemName, isShow, price } = req.body
+    const { categoryId, itemName, isShow, price, description } = req.body
     await prisma.foodItem.create({
       data: {
+        description: description,
         categoryId: Number(categoryId), // 由 form 傳來的資料可能會變成 string  需要轉成 number
         name: itemName,
         isShow: isShow,
